@@ -1,0 +1,1 @@
+print("Bis Mil Allah")
