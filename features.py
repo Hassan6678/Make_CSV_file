@@ -1,7 +1,46 @@
 from math import log10, copysign
 import imutils
+from skimage.feature import hog
+from skimage import data, exposure
 import numpy as np
 import cv2 as cv
+
+def CNN(image):
+    width = 28
+    height = 28
+    dim = (width, height)
+    #gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    # resize image
+    resized_image = cv.resize(image, dim, interpolation=cv.INTER_AREA)
+
+    cnn = []
+    row, col = resized_image.shape
+    for r in range(row):
+        for c in range(col):
+            cnn.append(int(resized_image[r][c]))
+
+    return cnn
+
+def HOG(image):
+    fd, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),
+                        cells_per_block=(1, 1), visualize=True, multichannel=True)
+
+    # Rescale histogram for better display
+    hog_image_rescaled = exposure.rescale_intensity(hog_image, in_range=(0, 10))
+
+    width = 64
+    height = 64
+    dim = (width, height)
+    # resize image
+    image = cv.resize(hog_image_rescaled, dim, interpolation = cv.INTER_AREA)
+
+    HOG = []
+    row, col = image.shape
+    for r in range(row):
+        for c in range(col):
+            HOG.append(float(image[r][c]))
+
+    return HOG
 
 def convex_hull(path):
     global solidity,area
